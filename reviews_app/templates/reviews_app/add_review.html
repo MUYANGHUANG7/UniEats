@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>写评论</title></head>
+<body>
+    <h2>给 {{ restaurant.name }} 写评论</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">提交评论</button>
+    </form>
+    <br>
+    <a href="{% url 'restaurant_list' %}">返回主页</a>
+</body>
+</html>

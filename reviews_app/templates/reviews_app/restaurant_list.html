@@ -4,14 +4,27 @@
     <title>UniEats 餐厅列表</title>
 </head>
 <body>
+    <div>
+        {% if user.is_authenticated %}
+            <p>你好呀, <b>{{ user.username }}</b>！ | 
+               <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                   {% csrf_token %}<button type="submit">登出</button>
+               </form>
+            </p>
+        {% else %}
+            <p>你还没登录哦！ | <a href="{% url 'login' %}">去登录</a> | <a href="{% url 'register' %}">去注册</a></p>
+        {% endif %}
+    </div>
+    
+    <hr>
     <h1>欢迎来到 UniEats！</h1>
     <h2>我们有以下好吃的：</h2>
     
     <ul>
         {% for restaurant in restaurants %}
             <li>
-                <strong>{{ restaurant.name }}</strong> 
-                (属于分类: {{ restaurant.category.name }})
+                <strong>{{ restaurant.name }}</strong> (分类: {{ restaurant.category.name }})
+                <a href="{% url 'add_review' restaurant.id %}">[写评论]</a>
             </li>
         {% endfor %}
     </ul>
