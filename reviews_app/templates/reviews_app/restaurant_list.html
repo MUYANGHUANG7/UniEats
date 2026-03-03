@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UniEats 餐厅列表</title>
+</head>
+<body>
+    <h1>欢迎来到 UniEats！</h1>
+    <h2>我们有以下好吃的：</h2>
+    
+    <ul>
+        {% for restaurant in restaurants %}
+            <li>
+                <strong>{{ restaurant.name }}</strong> 
+                (属于分类: {{ restaurant.category.name }})
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
