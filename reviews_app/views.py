@@ -3,12 +3,20 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import Avg, Count
 from .models import Restaurant, Review, ReviewLike, Bookmark
 from .forms import ReviewForm
 
 
 def restaurant_list(request):
-    restaurants = Restaurant.objects.all()
+    # Performance: avoid N+1 queries in templates by preloading related category
+    # and precomputing review_count/avg_rating in the database (single query).
+    restaurants = (
+        Restaurant.objects.select_related('category').annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews', distinct=True),
+        )
+    )
     bookmarked_ids = set()
     if request.user.is_authenticated:
         bookmarked_ids = set(
@@ -22,15 +30,32 @@ def restaurant_list(request):
 
 
 def restaurant_detail(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    reviews = restaurant.reviews.all().order_by('-created_at')
+    # Performance: fetch category and aggregate stats (average rating + review count)
+    # in the same query used to load the restaurant.
+    restaurant = get_object_or_404(
+        Restaurant.objects.select_related('category').annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews', distinct=True),
+        ),
+        id=restaurant_id,
+    )
+
+    # Performance: load review authors in the same query and precompute like counts
+    # to prevent per-review COUNT(*) queries in the template.
+    reviews = (
+        Review.objects.filter(restaurant_id=restaurant_id)
+        .select_related('user')
+        .annotate(like_count=Count('likes', distinct=True))
+        .order_by('-created_at')
+    )
 
     is_bookmarked = False
     liked_review_ids = set()
     if request.user.is_authenticated:
         is_bookmarked = Bookmark.objects.filter(user=request.user, restaurant=restaurant).exists()
+        # Performance: query liked review IDs in one shot (no need to iterate reviews).
         liked_review_ids = set(
-            ReviewLike.objects.filter(user=request.user, review__in=reviews).values_list('review_id', flat=True)
+            ReviewLike.objects.filter(user=request.user, review__restaurant_id=restaurant_id).values_list('review_id', flat=True)
         )
 
     context = {

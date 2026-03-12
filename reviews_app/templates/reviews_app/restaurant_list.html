@@ -47,14 +47,15 @@
                                         <span class="badge bg-secondary">{{ restaurant.category.name }}</span>
                                     </p>
 
-                                    {% if restaurant.reviews.count > 0 %}
+                                    {# Performance: review_count and avg_rating are annotated in the view to avoid N+1 queries. #}
+                                    {% if restaurant.review_count > 0 %}
                                         <div class="restaurant-rating mb-3" role="group" aria-label="Restaurant rating information">
                                             <span class="text-warning" aria-label="Average rating">
                                                 <i class="bi bi-star-fill" aria-hidden="true"></i>
-                                                {{ restaurant.average_rating }}
+                                                {{ restaurant.avg_rating|default:0|floatformat:1 }}
                                             </span>
                                             <span class="text-muted small">
-                                                ({{ restaurant.reviews.count }} reviews)
+                                                ({{ restaurant.review_count }} reviews)
                                             </span>
                                         </div>
                                     {% else %}

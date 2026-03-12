@@ -30,14 +30,15 @@
                         </div>
 
                         <!-- Average Rating -->
-                        {% if reviews %}
+                        {# Performance: avg_rating and review_count are annotated in the view to avoid extra queries. #}
+                        {% if restaurant.review_count > 0 %}
                             <div class="text-end">
                                 <div class="display-6 text-warning mb-1" role="group" aria-label="Average rating">
                                     <i class="bi bi-star-fill" aria-hidden="true"></i>
-                                    {{ restaurant.average_rating }}
+                                    {{ restaurant.avg_rating|default:0|floatformat:1 }}
                                 </div>
                                 <p class="text-muted small mb-0">
-                                    {{ reviews.count }} {% if reviews.count == 1 %}review{% else %}reviews{% endif %}
+                                    {{ restaurant.review_count }} {% if restaurant.review_count == 1 %}review{% else %}reviews{% endif %}
                                 </p>
                             </div>
                         {% else %}
@@ -96,10 +97,10 @@
                     <i class="bi bi-chat-left-text text-primary" aria-hidden="true"></i>
                     Customer Reviews
                 </h2>
-                <span class="ms-2 badge bg-primary rounded-pill">{{ reviews.count }}</span>
+                <span class="ms-2 badge bg-primary rounded-pill">{{ restaurant.review_count }}</span>
             </div>
 
-            {% if reviews %}
+            {% if restaurant.review_count > 0 %}
                 <div class="reviews-container">
                     {% for review in reviews %}
                         <article class="card mb-3 shadow-sm review-card">
@@ -144,15 +145,15 @@
                                                 aria-label="{% if review.id in liked_review_ids %}Unlike this review{% else %}Like this review{% endif %}"
                                                 aria-pressed="{{ review.id|yesno:'true,false' }}">
                                             <i class="bi {% if review.id in liked_review_ids %}bi-heart-fill{% else %}bi-heart{% endif %}" aria-hidden="true"></i>
-                                            <span class="like-count">{{ review.likes.count }}</span>
+                                            <span class="like-count">{{ review.like_count }}</span>
                                         </button>
                                     </div>
                                 {% else %}
-                                    {% if review.likes.count > 0 %}
+                                    {% if review.like_count > 0 %}
                                         <div class="mt-3 pt-2 border-top">
                                             <span class="text-muted small">
                                                 <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
-                                                {{ review.likes.count }}
+                                                {{ review.like_count }}
                                             </span>
                                         </div>
                                     {% endif %}
