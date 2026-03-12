@@ -96,6 +96,7 @@
                                 class="btn btn-lg {% if is_bookmarked %}btn-warning{% else %}btn-outline-warning{% endif %}"
                                 id="bookmark-btn"
                                 data-restaurant-id="{{ restaurant.id }}"
+                                data-url="{% url 'toggle_bookmark' restaurant.id %}"
                                 aria-label="{% if is_bookmarked %}Remove bookmark{% else %}Bookmark this restaurant{% endif %}"
                                 aria-pressed="{{ is_bookmarked|yesno:'true,false' }}">
                             <i class="bi {% if is_bookmarked %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}" aria-hidden="true"></i>
@@ -158,6 +159,7 @@
                                         <button type="button"
                                                 class="btn btn-sm like-btn {% if review.id in liked_review_ids %}btn-danger{% else %}btn-outline-danger{% endif %}"
                                                 data-review-id="{{ review.id }}"
+                                                data-url="{% url 'toggle_like' review.id %}"
                                                 aria-label="{% if review.id in liked_review_ids %}Unlike this review{% else %}Like this review{% endif %}"
                                                 aria-pressed="{{ review.id|yesno:'true,false' }}">
                                             <i class="bi {% if review.id in liked_review_ids %}bi-heart-fill{% else %}bi-heart{% endif %}" aria-hidden="true"></i>
