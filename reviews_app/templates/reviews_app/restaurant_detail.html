@@ -1,0 +1,316 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}{{ restaurant.name }} - UniEats{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="Breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'restaurant_list' %}" aria-label="Back to restaurant list">Restaurant List</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ restaurant.name }}</li>
+            </ol>
+        </nav>
+
+        <!-- Restaurant Detail Card -->
+        <article class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <!-- Restaurant Header -->
+                <header class="mb-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="h2 mb-2">{{ restaurant.name }}</h1>
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-tag" aria-hidden="true"></i>
+                                <span class="badge bg-secondary">{{ restaurant.category.name }}</span>
+                            </p>
+                        </div>
+
+                        <!-- Average Rating -->
+                        {% if reviews %}
+                            <div class="text-end">
+                                <div class="display-6 text-warning mb-1" role="group" aria-label="Average rating">
+                                    <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                    {{ restaurant.average_rating }}
+                                </div>
+                                <p class="text-muted small mb-0">
+                                    {{ reviews.count }} {% if reviews.count == 1 %}review{% else %}reviews{% endif %}
+                                </p>
+                            </div>
+                        {% else %}
+                            <div class="text-end">
+                                <p class="text-muted mb-0">No reviews yet</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Address -->
+                    <p class="mb-2">
+                        <i class="bi bi-geo-alt-fill text-primary" aria-hidden="true"></i>
+                        <strong>Address:</strong> {{ restaurant.address }}
+                    </p>
+
+                    <!-- Description -->
+                    {% if restaurant.description %}
+                        <div class="mt-3">
+                            <h2 class="h5 mb-2">
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                About This Restaurant
+                            </h2>
+                            <p class="text-muted">{{ restaurant.description }}</p>
+                        </div>
+                    {% endif %}
+                </header>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{% url 'add_review' restaurant.id %}"
+                       class="btn btn-primary btn-lg"
+                       role="button"
+                       aria-label="Write a review for {{ restaurant.name }}">
+                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                        Write a Review
+                    </a>
+                    {% if user.is_authenticated %}
+                        <button type="button"
+                                class="btn btn-lg {% if is_bookmarked %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                                id="bookmark-btn"
+                                data-restaurant-id="{{ restaurant.id }}"
+                                aria-label="{% if is_bookmarked %}Remove bookmark{% else %}Bookmark this restaurant{% endif %}"
+                                aria-pressed="{{ is_bookmarked|yesno:'true,false' }}">
+                            <i class="bi {% if is_bookmarked %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}" aria-hidden="true"></i>
+                            <span class="bookmark-text">{% if is_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}</span>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+
+        <!-- Reviews Section -->
+        <section aria-labelledby="reviews-heading">
+            <div class="d-flex align-items-center mb-3">
+                <h2 id="reviews-heading" class="h4 mb-0">
+                    <i class="bi bi-chat-left-text text-primary" aria-hidden="true"></i>
+                    Customer Reviews
+                </h2>
+                <span class="ms-2 badge bg-primary rounded-pill">{{ reviews.count }}</span>
+            </div>
+
+            {% if reviews %}
+                <div class="reviews-container">
+                    {% for review in reviews %}
+                        <article class="card mb-3 shadow-sm review-card">
+                            <div class="card-body">
+                                <!-- Review Header -->
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-circle fs-3 text-secondary me-2" aria-hidden="true"></i>
+                                        <div>
+                                            <h3 class="h6 mb-0">{{ review.user.username }}</h3>
+                                            <p class="text-muted small mb-0">
+                                                <i class="bi bi-clock" aria-hidden="true"></i>
+                                                {{ review.created_at|date:"F j, Y" }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Rating -->
+                                    <div class="text-warning" role="group" aria-label="Rating: {{ review.rating }} out of 5 stars">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i class="bi bi-star" aria-hidden="true"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span class="ms-1 text-dark">{{ review.rating }}/5</span>
+                                    </div>
+                                </div>
+
+                                <!-- Review Comment -->
+                                <div class="mt-3">
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                </div>
+
+                                <!-- Like Button -->
+                                {% if user.is_authenticated %}
+                                    <div class="mt-3 pt-2 border-top">
+                                        <button type="button"
+                                                class="btn btn-sm like-btn {% if review.id in liked_review_ids %}btn-danger{% else %}btn-outline-danger{% endif %}"
+                                                data-review-id="{{ review.id }}"
+                                                aria-label="{% if review.id in liked_review_ids %}Unlike this review{% else %}Like this review{% endif %}"
+                                                aria-pressed="{{ review.id|yesno:'true,false' }}">
+                                            <i class="bi {% if review.id in liked_review_ids %}bi-heart-fill{% else %}bi-heart{% endif %}" aria-hidden="true"></i>
+                                            <span class="like-count">{{ review.likes.count }}</span>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    {% if review.likes.count > 0 %}
+                                        <div class="mt-3 pt-2 border-top">
+                                            <span class="text-muted small">
+                                                <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
+                                                {{ review.likes.count }}
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <strong>No reviews yet.</strong> Be the first to share your experience!
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.2rem;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.review-card {
+    border-left: 4px solid #0056b3;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.review-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bi-star-fill,
+.bi-star {
+    font-size: 1.1rem;
+}
+
+.like-btn {
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.like-btn:active {
+    transform: scale(1.2);
+}
+
+#bookmark-btn {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (max-width: 576px) {
+    .display-6 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+        || '{{ csrf_token }}';
+
+    // Like buttons
+    document.querySelectorAll('.like-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const reviewId = this.dataset.reviewId;
+            const button = this;
+
+            fetch('/review/' + reviewId + '/like/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                const icon = button.querySelector('i');
+                const countSpan = button.querySelector('.like-count');
+                countSpan.textContent = data.count;
+
+                if (data.liked) {
+                    button.classList.remove('btn-outline-danger');
+                    button.classList.add('btn-danger');
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    button.setAttribute('aria-label', 'Unlike this review');
+                    button.setAttribute('aria-pressed', 'true');
+                } else {
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-outline-danger');
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    button.setAttribute('aria-label', 'Like this review');
+                    button.setAttribute('aria-pressed', 'false');
+                }
+            });
+        });
+    });
+
+    // Bookmark button
+    const bookmarkBtn = document.getElementById('bookmark-btn');
+    if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function () {
+            const restaurantId = this.dataset.restaurantId;
+            const button = this;
+
+            fetch('/restaurant/' + restaurantId + '/bookmark/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                const icon = button.querySelector('i');
+                const text = button.querySelector('.bookmark-text');
+
+                if (data.bookmarked) {
+                    button.classList.remove('btn-outline-warning');
+                    button.classList.add('btn-warning');
+                    icon.classList.remove('bi-bookmark');
+                    icon.classList.add('bi-bookmark-fill');
+                    text.textContent = 'Bookmarked';
+                    button.setAttribute('aria-label', 'Remove bookmark');
+                    button.setAttribute('aria-pressed', 'true');
+                } else {
+                    button.classList.remove('btn-warning');
+                    button.classList.add('btn-outline-warning');
+                    icon.classList.remove('bi-bookmark-fill');
+                    icon.classList.add('bi-bookmark');
+                    text.textContent = 'Bookmark';
+                    button.setAttribute('aria-label', 'Bookmark this restaurant');
+                    button.setAttribute('aria-pressed', 'false');
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

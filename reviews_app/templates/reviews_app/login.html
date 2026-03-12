@@ -1,0 +1,148 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}Login - UniEats{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <!-- Login Card -->
+        <article class="card shadow-sm mt-5">
+            <div class="card-body p-4">
+                <!-- Header -->
+                <header class="text-center mb-4">
+                    <div class="mb-3">
+                        <i class="bi bi-box-arrow-in-right display-4 text-primary" aria-hidden="true"></i>
+                    </div>
+                    <h1 class="h2 mb-2">Account Login</h1>
+                    <p class="text-muted">Welcome back to UniEats</p>
+                </header>
+
+                <!-- Login Form -->
+                <form method="post" novalidate aria-labelledby="login-heading">
+                    <fieldset>
+                        <legend class="sr-only" id="login-heading">Login form</legend>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert" aria-live="polite">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person" aria-hidden="true"></i>
+                                Username
+                                {% if form.username.field.required %}
+                                    <span class="text-danger" aria-label="Required field">*</span>
+                                {% endif %}
+                            </label>
+                            <input type="text"
+                                   name="{{ form.username.name }}"
+                                   id="{{ form.username.id_for_label }}"
+                                   class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                   placeholder="Enter your username"
+                                   value="{{ form.username.value|default:'' }}"
+                                   {% if form.username.field.required %}required aria-required="true"{% endif %}
+                                   autocomplete="username"
+                                   aria-describedby="{% if form.username.errors %}{{ form.username.id_for_label }}-error{% endif %}">
+                            {% if form.username.errors %}
+                                <div id="{{ form.username.id_for_label }}-error" class="invalid-feedback" role="alert">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="bi bi-lock" aria-hidden="true"></i>
+                                Password
+                                {% if form.password.field.required %}
+                                    <span class="text-danger" aria-label="Required field">*</span>
+                                {% endif %}
+                            </label>
+                            <input type="password"
+                                   name="{{ form.password.name }}"
+                                   id="{{ form.password.id_for_label }}"
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                                   placeholder="Enter your password"
+                                   {% if form.password.field.required %}required aria-required="true"{% endif %}
+                                   autocomplete="current-password"
+                                   aria-describedby="{% if form.password.errors %}{{ form.password.id_for_label }}-error{% endif %}">
+                            {% if form.password.errors %}
+                                <div id="{{ form.password.id_for_label }}-error" class="invalid-feedback" role="alert">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg"
+                                    aria-label="Submit login form">
+                                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                                Login
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <!-- Registration Link -->
+                <hr class="my-4" role="presentation">
+
+                <div class="text-center">
+                    <p class="text-muted mb-2">Don't have an account yet?</p>
+                    <a href="{% url 'register' %}"
+                       class="btn btn-outline-secondary"
+                       role="button"
+                       aria-label="Go to registration page">
+                        <i class="bi bi-person-plus" aria-hidden="true"></i>
+                        Register Now
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <!-- Back to Home Link -->
+        <div class="text-center mt-3">
+            <a href="{% url 'restaurant_list' %}"
+               class="text-decoration-none"
+               aria-label="Back to home page">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Login page specific styles */
+.card {
+    border-radius: 12px;
+}
+
+.form-control:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25);
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 2rem 1.5rem !important;
+    }
+}
+</style>
+{% endblock %}

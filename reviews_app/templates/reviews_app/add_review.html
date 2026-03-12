@@ -1,0 +1,233 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}Write Review - {{ restaurant.name }} - UniEats{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <!-- Page Header -->
+        <header class="mb-4">
+            <nav aria-label="Breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'restaurant_list' %}" aria-label="Back to restaurant list">Restaurant List</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'restaurant_detail' restaurant.id %}" aria-label="Back to {{ restaurant.name }} details">{{ restaurant.name }}</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Write Review</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-pencil-square display-5 text-primary me-3" aria-hidden="true"></i>
+                <div>
+                    <h1 class="h2 mb-1">Write Review</h1>
+                    <p class="text-muted mb-0">
+                        Share your dining experience at <strong>{{ restaurant.name }}</strong>
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Review Form Card -->
+        <article class="card shadow-sm">
+            <div class="card-body p-4">
+                <!-- Restaurant Info -->
+                <div class="alert alert-info" role="region" aria-label="Restaurant information">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-shop fs-3 me-3" aria-hidden="true"></i>
+                        <div>
+                            <h2 class="h5 mb-1">{{ restaurant.name }}</h2>
+                            <p class="mb-0 text-muted">
+                                <i class="bi bi-tag" aria-hidden="true"></i>
+                                {{ restaurant.category.name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <form method="post" novalidate aria-labelledby="review-form-heading">
+                    <fieldset>
+                        <legend class="sr-only" id="review-form-heading">Review form</legend>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert" aria-live="polite">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Rating Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.rating.id_for_label }}" class="form-label">
+                                <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+                                Rating
+                                {% if form.rating.field.required %}
+                                    <span class="text-danger" aria-label="Required field">*</span>
+                                {% endif %}
+                            </label>
+                            <select name="{{ form.rating.name }}"
+                                    id="{{ form.rating.id_for_label }}"
+                                    class="form-select form-select-lg {% if form.rating.errors %}is-invalid{% endif %}"
+                                    {% if form.rating.field.required %}required aria-required="true"{% endif %}
+                                    aria-describedby="rating-help {% if form.rating.errors %}{{ form.rating.id_for_label }}-error{% endif %}">
+                                <option value="" disabled {% if not form.rating.value %}selected{% endif %}>
+                                    -- Select a rating --
+                                </option>
+                                <option value="5" {% if form.rating.value|stringformat:"s" == "5" %}selected{% endif %}>
+                                    ⭐⭐⭐⭐⭐ Excellent (5 stars)
+                                </option>
+                                <option value="4" {% if form.rating.value|stringformat:"s" == "4" %}selected{% endif %}>
+                                    ⭐⭐⭐⭐ Very Good (4 stars)
+                                </option>
+                                <option value="3" {% if form.rating.value|stringformat:"s" == "3" %}selected{% endif %}>
+                                    ⭐⭐⭐ Average (3 stars)
+                                </option>
+                                <option value="2" {% if form.rating.value|stringformat:"s" == "2" %}selected{% endif %}>
+                                    ⭐⭐ Poor (2 stars)
+                                </option>
+                                <option value="1" {% if form.rating.value|stringformat:"s" == "1" %}selected{% endif %}>
+                                    ⭐ Terrible (1 star)
+                                </option>
+                            </select>
+                            <div id="rating-help" class="form-text">
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                Select a rating from 1-5 stars based on your dining experience
+                            </div>
+                            {% if form.rating.errors %}
+                                <div id="{{ form.rating.id_for_label }}-error" class="invalid-feedback" role="alert">
+                                    {% for error in form.rating.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Comment Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.comment.id_for_label }}" class="form-label">
+                                <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                                Review Comments
+                                {% if form.comment.field.required %}
+                                    <span class="text-danger" aria-label="Required field">*</span>
+                                {% endif %}
+                            </label>
+                            <textarea name="{{ form.comment.name }}"
+                                      id="{{ form.comment.id_for_label }}"
+                                      class="form-control {% if form.comment.errors %}is-invalid{% endif %}"
+                                      rows="6"
+                                      placeholder="Share your thoughts about this restaurant, including food quality, service, atmosphere, etc..."
+                                      {% if form.comment.field.required %}required aria-required="true"{% endif %}
+                                      aria-describedby="comment-help {% if form.comment.errors %}{{ form.comment.id_for_label }}-error{% endif %}">{{ form.comment.value|default:"" }}</textarea>
+                            <div id="comment-help" class="form-text">
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                Write about your authentic dining experience to help others make informed choices
+                            </div>
+                            {% if form.comment.errors %}
+                                <div id="{{ form.comment.id_for_label }}-error" class="invalid-feedback" role="alert">
+                                    {% for error in form.comment.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'restaurant_list' %}"
+                               class="btn btn-outline-secondary btn-lg"
+                               role="button"
+                               aria-label="Cancel and return to restaurant list">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                Cancel
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg"
+                                    aria-label="Submit review">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                Submit Review
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </article>
+
+        <!-- Tips Section -->
+        <aside class="mt-4 p-3 bg-light rounded" role="complementary" aria-label="Review tips">
+            <h3 class="h6 mb-2">
+                <i class="bi bi-lightbulb text-warning" aria-hidden="true"></i>
+                Review Tips
+            </h3>
+            <ul class="mb-0 small">
+                <li>Be objective and honest, reflect your authentic dining experience</li>
+                <li>Consider food taste, portion size, price, service, and other aspects</li>
+                <li>Avoid inappropriate language and respect restaurant staff</li>
+            </ul>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Review form specific styles */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.2rem;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.form-text i {
+    margin-right: 0.25rem;
+}
+
+/* Star rating visual feedback */
+.form-select option {
+    padding: 0.5rem;
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .d-grid .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,367 @@
+/* UniEats Custom Styles - Accessibility & Responsive Design */
+
+/* ===== Accessibility Features ===== */
+
+/* Skip to main content link for keyboard navigation */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #ffc107;
+}
+
+/* High Contrast Colors for Better Readability */
+:root {
+    --primary-color: #0056b3;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --focus-outline: #0056b3;
+}
+
+/* Enhanced Focus Indicators for Keyboard Navigation */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+.btn:focus {
+    outline: 3px solid var(--focus-outline);
+    outline-offset: 2px;
+}
+
+/* Ensure minimum touch target size for mobile (48x48px) */
+.btn,
+.nav-link,
+input[type="submit"],
+button {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* ===== Typography & Readability ===== */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #212529;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+/* WCAG AAA compliant text contrast */
+.text-muted {
+    color: #495057 !important;
+}
+
+/* ===== Restaurant Card Styles ===== */
+
+.restaurant-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    background-color: #fff;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.restaurant-card:focus-within {
+    outline: 3px solid var(--focus-outline);
+    outline-offset: 2px;
+}
+
+.restaurant-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.restaurant-name a {
+    transition: color 0.2s ease;
+}
+
+.restaurant-name a:hover {
+    color: var(--primary-color) !important;
+}
+
+.restaurant-category {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.restaurant-rating {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* ===== Review Card Styles ===== */
+
+.review-card {
+    border-left: 4px solid var(--primary-color);
+    background-color: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.review-rating {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.review-author {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* ===== Form Styles ===== */
+
+.form-label {
+    font-weight: 500;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+/* Error messages */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.errorlist li {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+}
+
+/* ===== Navbar Enhancements ===== */
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.navbar-brand i {
+    margin-right: 0.5rem;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Style for logout button to look like nav-link */
+.navbar-nav form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav form button.nav-link {
+    border: none;
+    background: none;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease, color 0.15s ease-in-out;
+}
+
+.navbar-nav form button.nav-link:hover {
+    color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.navbar-nav form button.nav-link:focus {
+    color: #fff;
+}
+
+.navbar-dark .navbar-nav form button.nav-link {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.navbar-dark .navbar-nav form button.nav-link:hover,
+.navbar-dark .navbar-nav form button.nav-link:focus {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* ===== Footer Styles ===== */
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid #dee2e6;
+}
+
+footer a {
+    color: #6c757d;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--primary-color);
+}
+
+/* ===== Responsive Design ===== */
+
+/* Mobile-first approach */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .restaurant-card {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    /* Increase tap target size on mobile */
+    .btn,
+    .nav-link {
+        min-height: 48px;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Tablet */
+@media (min-width: 577px) and (max-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .restaurant-card {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ===== Print Styles ===== */
+
+@media print {
+    .navbar,
+    footer,
+    .btn {
+        display: none;
+    }
+
+    body {
+        font-size: 12pt;
+        color: #000;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+}
+
+/* ===== Reduced Motion Support ===== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .restaurant-card:hover {
+        transform: none;
+    }
+}
+
+/* ===== Dark Mode Support (Optional) ===== */
+
+@media (prefers-color-scheme: dark) {
+    /* Users can implement dark mode preferences here */
+}
+
+/* ===== Utility Classes ===== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Ensure proper spacing */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mt-4 {
+    margin-top: 1.5rem !important;
+}

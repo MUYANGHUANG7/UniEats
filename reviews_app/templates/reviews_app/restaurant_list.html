@@ -1,0 +1,174 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}Restaurant List - UniEats{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Page Header -->
+        <header class="mb-4">
+            <h1 class="display-4 text-center mb-3" id="page-title">Welcome to UniEats!</h1>
+            <p class="lead text-center text-muted">Discover great food around you and share your dining experience</p>
+        </header>
+
+        <!-- Restaurants Section -->
+        <section aria-labelledby="restaurants-heading">
+            <h2 id="restaurants-heading" class="h3 mb-4">
+                <i class="bi bi-shop" aria-hidden="true"></i>
+                Our Restaurant List
+            </h2>
+
+            {% if restaurants %}
+                <div class="row row-cols-1 row-cols-md-2 g-4" role="list" aria-label="Restaurant list">
+                    {% for restaurant in restaurants %}
+                        <div class="col" role="listitem">
+                            <article class="card restaurant-card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h3 class="card-title restaurant-name">
+                                            <a href="{% url 'restaurant_detail' restaurant.id %}"
+                                               class="text-decoration-none text-dark"
+                                               aria-label="View details of {{ restaurant.name }}">
+                                                {{ restaurant.name }}
+                                            </a>
+                                        </h3>
+                                        {% if user.is_authenticated %}
+                                            <button type="button"
+                                                    class="btn btn-sm bookmark-btn {% if restaurant.id in bookmarked_ids %}btn-warning{% else %}btn-outline-warning{% endif %}"
+                                                    data-restaurant-id="{{ restaurant.id }}"
+                                                    aria-label="{% if restaurant.id in bookmarked_ids %}Remove bookmark from {{ restaurant.name }}{% else %}Bookmark {{ restaurant.name }}{% endif %}"
+                                                    aria-pressed="{{ restaurant.id|yesno:'true,false' }}">
+                                                <i class="bi {% if restaurant.id in bookmarked_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}" aria-hidden="true"></i>
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <p class="card-text restaurant-category">
+                                        <i class="bi bi-tag" aria-hidden="true"></i>
+                                        <span class="badge bg-secondary">{{ restaurant.category.name }}</span>
+                                    </p>
+
+                                    {% if restaurant.reviews.count > 0 %}
+                                        <div class="restaurant-rating mb-3" role="group" aria-label="Restaurant rating information">
+                                            <span class="text-warning" aria-label="Average rating">
+                                                <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                {{ restaurant.average_rating }}
+                                            </span>
+                                            <span class="text-muted small">
+                                                ({{ restaurant.reviews.count }} reviews)
+                                            </span>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted small mb-3">No reviews yet</p>
+                                    {% endif %}
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-grid gap-2">
+                                        <a href="{% url 'restaurant_detail' restaurant.id %}"
+                                           class="btn btn-outline-primary"
+                                           role="button"
+                                           aria-label="View details of {{ restaurant.name }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                            View Details
+                                        </a>
+                                        <a href="{% url 'add_review' restaurant.id %}"
+                                           class="btn btn-primary"
+                                           role="button"
+                                           aria-label="Write a review for {{ restaurant.name }}">
+                                            <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                            Write Review
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    <strong>No restaurants available</strong> - Please check back later.
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Call to Action for Non-authenticated Users -->
+        {% if not user.is_authenticated %}
+            <aside class="mt-5 p-4 bg-light rounded" role="complementary" aria-label="Registration prompt">
+                <div class="text-center">
+                    <h3 class="h4 mb-3">Join the UniEats Community</h3>
+                    <p class="mb-3">Register an account and start sharing your dining experiences!</p>
+                    <a href="{% url 'register' %}"
+                       class="btn btn-success btn-lg"
+                       role="button"
+                       aria-label="Register account now">
+                        <i class="bi bi-person-plus" aria-hidden="true"></i>
+                        Register Now
+                    </a>
+                </div>
+            </aside>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.display-4 {
+    font-weight: 700;
+    color: #212529;
+}
+
+.lead {
+    font-size: 1.15rem;
+}
+
+.bookmark-btn {
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.bookmark-btn:active {
+    transform: scale(1.2);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = '{{ csrf_token }}';
+
+    document.querySelectorAll('.bookmark-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const restaurantId = this.dataset.restaurantId;
+            const button = this;
+
+            fetch('/restaurant/' + restaurantId + '/bookmark/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                const icon = button.querySelector('i');
+
+                if (data.bookmarked) {
+                    button.classList.remove('btn-outline-warning');
+                    button.classList.add('btn-warning');
+                    icon.classList.remove('bi-bookmark');
+                    icon.classList.add('bi-bookmark-fill');
+                    button.setAttribute('aria-pressed', 'true');
+                } else {
+                    button.classList.remove('btn-warning');
+                    button.classList.add('btn-outline-warning');
+                    icon.classList.remove('bi-bookmark-fill');
+                    icon.classList.add('bi-bookmark');
+                    button.setAttribute('aria-pressed', 'false');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
