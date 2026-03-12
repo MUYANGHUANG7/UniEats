@@ -53,7 +53,6 @@
                                             <button type="button"
                                                     class="btn btn-sm bookmark-btn {% if restaurant.id in bookmarked_ids %}btn-warning{% else %}btn-outline-warning{% endif %}"
                                                     data-restaurant-id="{{ restaurant.id }}"
-                                                    data-url="{% url 'toggle_bookmark' restaurant.id %}"
                                                     aria-label="{% if restaurant.id in bookmarked_ids %}Remove bookmark from {{ restaurant.name }}{% else %}Bookmark {{ restaurant.name }}{% endif %}"
                                                     aria-pressed="{{ restaurant.id|yesno:'true,false' }}">
                                                 <i class="bi {% if restaurant.id in bookmarked_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}" aria-hidden="true"></i>

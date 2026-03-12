@@ -43,10 +43,7 @@
     const restaurantId = button.dataset.restaurantId;
     if (!restaurantId) return;
 
-    // Prefer server-generated URLs (Django reverse) passed via data-url to avoid hard-coded routes.
-    const url = button.dataset.url || `/restaurant/${restaurantId}/bookmark/`;
-
-    postJson(url)
+    postJson(`/restaurant/${restaurantId}/bookmark/`)
       .then((data) => {
         const icon = button.querySelector('i');
         const text = button.querySelector('.bookmark-text');
@@ -81,10 +78,7 @@
     const reviewId = button.dataset.reviewId;
     if (!reviewId) return;
 
-    // Prefer server-generated URLs (Django reverse) passed via data-url to avoid hard-coded routes.
-    const url = button.dataset.url || `/review/${reviewId}/like/`;
-
-    postJson(url)
+    postJson(`/review/${reviewId}/like/`)
       .then((data) => {
         const icon = button.querySelector('i');
         const countSpan = button.querySelector('.like-count');
