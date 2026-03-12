@@ -164,42 +164,4 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const csrfToken = '{{ csrf_token }}';
-
-    document.querySelectorAll('.bookmark-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const restaurantId = this.dataset.restaurantId;
-            const button = this;
-
-            fetch('/restaurant/' + restaurantId + '/bookmark/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(function (response) { return response.json(); })
-            .then(function (data) {
-                const icon = button.querySelector('i');
-
-                if (data.bookmarked) {
-                    button.classList.remove('btn-outline-warning');
-                    button.classList.add('btn-warning');
-                    icon.classList.remove('bi-bookmark');
-                    icon.classList.add('bi-bookmark-fill');
-                    button.setAttribute('aria-pressed', 'true');
-                } else {
-                    button.classList.remove('btn-warning');
-                    button.classList.add('btn-outline-warning');
-                    icon.classList.remove('bi-bookmark-fill');
-                    icon.classList.add('bi-bookmark');
-                    button.setAttribute('aria-pressed', 'false');
-                }
-            });
-        });
-    });
-});
-</script>
 {% endblock %}
