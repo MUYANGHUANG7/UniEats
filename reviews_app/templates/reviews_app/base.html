@@ -11,33 +11,28 @@
     <!-- Preconnect to CDN for faster resource loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-    <!-- Performance: PageSpeed Insights flags these stylesheets as render-blocking.
-         Preloading them as styles and switching rel=stylesheet on load moves them off the critical rendering path. -->
-    <!-- Bootstrap 5 CSS -->
-    <link rel="preload"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          as="style"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    {% block bootstrap_css %}
+        <!-- Bootstrap 5 CSS (kept render-blocking by default for stable first render). -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
               integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
               crossorigin="anonymous">
-    </noscript>
+    {% endblock %}
 
-    <!-- Bootstrap Icons -->
-    <link rel="preload"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-          as="style"
-          crossorigin="anonymous"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <link rel="stylesheet"
+    {% block bootstrap_icons_css %}
+        <!-- Performance: PageSpeed Insights flags icon styles as render-blocking.
+             Icons are non-critical for first paint, so load this stylesheet asynchronously. -->
+        <link rel="preload"
               href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-              crossorigin="anonymous">
-    </noscript>
+              as="style"
+              crossorigin="anonymous"
+              onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+                  crossorigin="anonymous">
+        </noscript>
+    {% endblock %}
 
     <!-- Custom CSS -->
     {% load static %}
