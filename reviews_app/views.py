@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.db.models import Avg, Count
-from .models import Restaurant, Review, ReviewLike, Bookmark
+from django.db.models import Avg, Count, Q
+from .models import Category, Restaurant, Review, ReviewLike, Bookmark
 from .forms import ReviewForm
 
 
@@ -17,6 +17,31 @@ def restaurant_list(request):
             review_count=Count('reviews', distinct=True),
         )
     )
+
+    # List page controls (wireframe): search query, category filter, and rating sort.
+    query = (request.GET.get('q') or '').strip()
+    category_id = (request.GET.get('category') or '').strip()
+    sort = (request.GET.get('sort') or '').strip()
+
+    if query:
+        restaurants = restaurants.filter(
+            Q(name__icontains=query)
+            | Q(address__icontains=query)
+            | Q(category__name__icontains=query)
+        )
+
+    selected_category = None
+    if category_id.isdigit():
+        selected_category = int(category_id)
+        restaurants = restaurants.filter(category_id=selected_category)
+
+    if sort == 'rating':
+        restaurants = restaurants.order_by('-avg_rating', 'name')
+    else:
+        restaurants = restaurants.order_by('name')
+
+    # Filter dropdown options.
+    categories = Category.objects.all().order_by('name')
     bookmarked_ids = set()
     if request.user.is_authenticated:
         bookmarked_ids = set(
@@ -25,6 +50,10 @@ def restaurant_list(request):
     context = {
         'restaurants': restaurants,
         'bookmarked_ids': bookmarked_ids,
+        'categories': categories,
+        'selected_category': selected_category,
+        'query': query,
+        'sort': sort,
     }
     return render(request, 'reviews_app/restaurant_list.html', context)
 
@@ -78,6 +107,38 @@ def register(request):
         form = UserCreationForm()
 
     return render(request, 'reviews_app/register.html', {'form': form})
+
+
+@login_required
+def profile(request):
+    reviews = (
+        Review.objects.filter(user=request.user)
+        .select_related('restaurant')
+        .order_by('-created_at')
+    )
+    return render(request, 'reviews_app/profile.html', {'reviews': reviews})
+
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ReviewForm(instance=review)
+    return render(request, 'reviews_app/edit_review.html', {'form': form, 'review': review})
+
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    if request.method == 'POST':
+        review.delete()
+        return redirect('profile')
+    return render(request, 'reviews_app/delete_review.html', {'review': review})
 
 
 @login_required

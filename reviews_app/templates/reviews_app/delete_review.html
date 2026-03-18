@@ -1,0 +1,32 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}Delete Review - UniEats{% endblock %}
+
+{% block body_class %}page-delete-review{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <header class="mb-4">
+            <h1 class="h2 mb-1">Delete Review</h1>
+            <p class="text-muted mb-0">{{ review.restaurant.name }}</p>
+        </header>
+
+        <div class="alert alert-warning" role="alert">
+            <strong>Are you sure?</strong> This action cannot be undone.
+        </div>
+
+        <article class="card shadow-sm">
+            <div class="card-body">
+                <p class="mb-0">{{ review.comment }}</p>
+            </div>
+        </article>
+
+        <form method="post" class="mt-3 d-flex gap-2 justify-content-end">
+            {% csrf_token %}
+            <a class="btn btn-outline-secondary" href="{% url 'profile' %}">Cancel</a>
+            <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

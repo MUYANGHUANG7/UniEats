@@ -1,0 +1,50 @@
+{% extends "reviews_app/base.html" %}
+
+{% block title %}My Profile - UniEats{% endblock %}
+
+{% block body_class %}page-profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <header class="mb-4">
+            <h1 class="h2 mb-1">My Reviews</h1>
+            <p class="text-muted mb-0">Edit or delete your own reviews.</p>
+        </header>
+
+        {% if reviews %}
+            <div class="d-grid gap-3">
+                {% for review in reviews %}
+                    <article class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="h5 mb-1">
+                                        <a href="{% url 'restaurant_detail' review.restaurant.id %}" class="text-decoration-none">
+                                            {{ review.restaurant.name }}
+                                        </a>
+                                    </h2>
+                                    <p class="text-muted small mb-2">{{ review.created_at|date:"F j, Y" }}</p>
+                                </div>
+                                <span class="badge bg-primary">{{ review.rating }}/5</span>
+                            </div>
+
+                            <p class="mb-3">{{ review.comment }}</p>
+
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-primary btn-sm" href="{% url 'edit_review' review.id %}">Edit</a>
+                                <a class="btn btn-outline-danger btn-sm" href="{% url 'delete_review' review.id %}">Delete</a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <strong>No reviews yet.</strong> Write a review from a restaurant page to see it here.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,26 @@
 (() => {
   'use strict';
+  const themeStorageKey = 'unieats-theme';
+
+  function applyTheme(theme) {
+    const normalized = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-bs-theme', normalized);
+    const toggleIcon = document.getElementById('theme-toggle')?.querySelector('i');
+    if (toggleIcon) {
+      toggleIcon.classList.toggle('bi-moon-stars', normalized === 'light');
+      toggleIcon.classList.toggle('bi-sun', normalized === 'dark');
+    }
+  }
+
+  function getPreferredTheme() {
+    const stored = localStorage.getItem(themeStorageKey);
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function initThemeToggle() {
+    applyTheme(getPreferredTheme());
+  }
 
   function getCookie(name) {
     const cookieString = document.cookie || '';
@@ -130,6 +151,16 @@
     const target = event.target;
     if (!(target instanceof Element)) return;
 
+    const themeToggle = target.closest('#theme-toggle');
+    if (themeToggle instanceof HTMLButtonElement) {
+      event.preventDefault();
+      const current = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(themeStorageKey, next);
+      applyTheme(next);
+      return;
+    }
+
     const bookmarkButton = target.closest('.bookmark-btn, #bookmark-btn');
     if (bookmarkButton instanceof HTMLButtonElement) {
       event.preventDefault();
@@ -143,4 +174,6 @@
       handleLikeClick(likeButton);
     }
   });
+
+  initThemeToggle();
 })();
