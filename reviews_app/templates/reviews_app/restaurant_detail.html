@@ -2,6 +2,8 @@
 
 {% block title %}{{ restaurant.name }} - UniEats{% endblock %}
 
+{% block body_class %}page-restaurant-detail{% endblock %}
+
 {% block bootstrap_css %}
     <!-- Performance: defer Bootstrap CSS on the restaurant detail page to reduce render-blocking requests reported by PageSpeed Insights. -->
     <link rel="preload"
@@ -187,62 +189,6 @@
         </section>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-.breadcrumb {
-    background-color: transparent;
-    padding: 0;
-    margin-bottom: 1rem;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "›";
-    font-size: 1.2rem;
-}
-
-.card {
-    border-radius: 12px;
-}
-
-.review-card {
-    border-left: 4px solid #0056b3;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.review-card:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.bi-star-fill,
-.bi-star {
-    font-size: 1.1rem;
-}
-
-.like-btn {
-    transition: transform 0.15s ease, background-color 0.2s ease;
-}
-
-.like-btn:active {
-    transform: scale(1.2);
-}
-
-#bookmark-btn {
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-@media (max-width: 576px) {
-    .display-6 {
-        font-size: 2rem;
-    }
-
-    .card-body {
-        padding: 1.5rem !important;
-    }
-}
-</style>
 {% endblock %}
 
 {% block extra_js %}

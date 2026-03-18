@@ -39,11 +39,24 @@
     return response.json();
   }
 
+  function buildUrlFromTemplate(template, id) {
+    if (!template) return null;
+    const marker = '/0/';
+    if (template.includes(marker)) {
+      return template.replace(marker, `/${id}/`);
+    }
+    return template.replace('0', String(id));
+  }
+
   function handleBookmarkClick(button) {
     const restaurantId = button.dataset.restaurantId;
     if (!restaurantId) return;
 
-    postJson(`/restaurant/${restaurantId}/bookmark/`)
+    const template = document.body?.dataset?.bookmarkUrlTemplate;
+    const url = buildUrlFromTemplate(template, restaurantId);
+    if (!url) return;
+
+    postJson(url)
       .then((data) => {
         const icon = button.querySelector('i');
         const text = button.querySelector('.bookmark-text');
@@ -78,7 +91,11 @@
     const reviewId = button.dataset.reviewId;
     if (!reviewId) return;
 
-    postJson(`/review/${reviewId}/like/`)
+    const template = document.body?.dataset?.likeUrlTemplate;
+    const url = buildUrlFromTemplate(template, reviewId);
+    if (!url) return;
+
+    postJson(url)
       .then((data) => {
         const icon = button.querySelector('i');
         const countSpan = button.querySelector('.like-count');

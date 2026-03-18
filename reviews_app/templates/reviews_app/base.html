@@ -55,7 +55,7 @@
 
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}" data-like-url-template="{% url 'toggle_like' 0 %}" data-bookmark-url-template="{% url 'toggle_bookmark' 0 %}">
     <!-- Skip to main content link for keyboard navigation -->
     <a href="#main-content" class="skip-link visually-hidden-focusable">Skip to main content</a>
 

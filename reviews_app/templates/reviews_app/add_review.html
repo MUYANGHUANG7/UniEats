@@ -2,6 +2,8 @@
 
 {% block title %}Write Review - {{ restaurant.name }} - UniEats{% endblock %}
 
+{% block body_class %}page-add-review{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-12 col-md-10 col-lg-8">
@@ -172,62 +174,4 @@
         </aside>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Review form specific styles */
-.breadcrumb {
-    background-color: transparent;
-    padding: 0;
-    margin-bottom: 1rem;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-    content: "›";
-    font-size: 1.2rem;
-}
-
-.card {
-    border-radius: 12px;
-}
-
-.form-select:focus,
-.form-control:focus {
-    border-color: #0056b3;
-    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.25);
-}
-
-textarea.form-control {
-    resize: vertical;
-    min-height: 150px;
-}
-
-.form-text {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-
-.form-text i {
-    margin-right: 0.25rem;
-}
-
-/* Star rating visual feedback */
-.form-select option {
-    padding: 0.5rem;
-}
-
-/* Ensure proper spacing on mobile */
-@media (max-width: 576px) {
-    .card-body {
-        padding: 1.5rem !important;
-    }
-
-    .d-grid .btn {
-        width: 100%;
-    }
-}
-</style>
 {% endblock %}

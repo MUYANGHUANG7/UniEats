@@ -2,6 +2,8 @@
 
 {% block title %}Restaurant List - UniEats{% endblock %}
 
+{% block body_class %}page-restaurant-list{% endblock %}
+
 {% block bootstrap_css %}
     <!-- Performance: defer Bootstrap CSS on the homepage to reduce render-blocking requests reported by PageSpeed Insights.
          This page provides small critical styles below to keep above-the-fold content visually stable until Bootstrap loads. -->
@@ -127,39 +129,6 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-.display-4 {
-    font-weight: 700;
-    color: #212529;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.mb-3 {
-    margin-bottom: 1rem;
-}
-
-.mb-4 {
-    margin-bottom: 1.5rem;
-}
-
-.lead {
-    font-size: 1.15rem;
-}
-
-.bookmark-btn {
-    transition: transform 0.15s ease, background-color 0.2s ease;
-}
-
-.bookmark-btn:active {
-    transform: scale(1.2);
-}
-</style>
 {% endblock %}
 
 {% block extra_js %}

@@ -365,3 +365,113 @@ footer a:hover {
 .mt-4 {
     margin-top: 1.5rem !important;
 }
+
+body.page-restaurant-list .lead {
+    font-size: 1.15rem;
+}
+
+body.page-restaurant-list .display-4 {
+    font-weight: 700;
+}
+
+body.page-restaurant-list .bookmark-btn {
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+body.page-restaurant-list .bookmark-btn:active {
+    transform: scale(1.2);
+}
+
+body.page-restaurant-detail .breadcrumb,
+body.page-add-review .breadcrumb {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+body.page-restaurant-detail .breadcrumb-item + .breadcrumb-item::before,
+body.page-add-review .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.2rem;
+}
+
+body.page-restaurant-detail .card,
+body.page-add-review .card,
+body.page-login .card,
+body.page-register .card {
+    border-radius: 12px;
+}
+
+body.page-restaurant-detail .review-card {
+    border-left: 4px solid #0056b3;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+body.page-restaurant-detail .review-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.page-restaurant-detail .bi-star-fill,
+body.page-restaurant-detail .bi-star {
+    font-size: 1.1rem;
+}
+
+body.page-restaurant-detail .like-btn {
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+body.page-restaurant-detail .like-btn:active {
+    transform: scale(1.2);
+}
+
+body.page-restaurant-detail #bookmark-btn {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.page-add-review textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+}
+
+body.page-add-review .form-text,
+body.page-register .form-text {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+body.page-add-review .form-text i,
+body.page-register .form-text i {
+    margin-right: 0.25rem;
+}
+
+body.page-add-review .form-select option {
+    padding: 0.5rem;
+}
+
+body.page-register .form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+@media (max-width: 576px) {
+    body.page-restaurant-detail .display-6 {
+        font-size: 2rem;
+    }
+
+    body.page-restaurant-detail .card-body,
+    body.page-add-review .card-body {
+        padding: 1.5rem !important;
+    }
+
+    body.page-login .card-body,
+    body.page-register .card-body {
+        padding: 2rem 1.5rem !important;
+    }
+
+    body.page-add-review .d-grid .btn {
+        width: 100%;
+    }
+}
